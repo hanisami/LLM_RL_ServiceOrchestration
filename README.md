@@ -20,8 +20,3 @@ The code is organized so you can:
 - reproduce plots/tables in the paper,
 - swap **LLM provider** or disable LLM guidance to compare baselines.
 
----
-
-## 2) Repository structure
-
-> NOTE: Folder names may differ slightly depending on your current layout—this is the intended structure.
