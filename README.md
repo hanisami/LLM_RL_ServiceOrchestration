@@ -1,29 +1,27 @@
-Conference PoC: RL decision-maker with sparse LLM context augmentation.
+# LLM + RL Service Orchestration under Demand Shift
 
-- RL (online tabular Q-learning) chooses actions every step.
-- LLM is NOT used for decision making. It only produces context (regime + risk flags).
-- LLM call frequency: once per episode (after a short warmup telemetry window).
-- Dummy non-stationary environment with hidden regimes.
-- Logs per-episode metrics to CSV and generates figures (PNG).
+Code and experiment artifacts for our paper on **LLM-guided reinforcement learning (RL)** for **service orchestration under demand shifts** (non-stationary workloads, changing resource availability, and fluctuating QoS/SLO constraints).
 
-Install:
-  python3 -m venv .venv
-  source .venv/bin/activate     (macOS/Linux)
-  .venv\Scripts\activate        (Windows PowerShell)
-  pip install -r requirements.txt
+---
 
-Run (mock LLM):
-  python3 main.py --provider mock
+## 1) What this repository does
 
-Run (real OpenAI LLM):
-  export OPENAI_API_KEY="your_key"     (macOS/Linux)
-  setx OPENAI_API_KEY "your_key"       (Windows PowerShell, new terminal after)
-  python3 main.py --provider openai --model gpt-5-mini
+We study orchestration decisions (e.g., **placement**, **scaling**, **consolidation**, **admission**, **migration**) in an **edge/cloud** setting where **demand shifts** cause non-stationarity.
 
-Outputs:
-  runs/   : CSV logs
-  figures/: PNG figures
+At each discrete time step *t*:
 
-Notes:
-- If OPENAI_API_KEY is missing, the OpenAI provider will raise a clear error.
-- For a cheaper “context-only” call, start with gpt-5-mini or gpt-5-nano.
+- **Telemetry → Context encoder:** raw measurements (utilization/QoS/SLA signals) are mapped into a compact state vector `s_t = f_enc(o_t)` capturing current conditions + temporal dynamics (trend/volatility/risk).
+- **RL policy:** chooses an orchestration action `a_t`.
+- **LLM-guidance (optional / configurable):** used as a structured advisor for *risk-aware orchestration*, generating constraints, candidate actions, or rationale signals that can be integrated into reward shaping / action pruning / safety checks.
+- **Reward:** combines SLO/SLA adherence, provisioning cost, backlog, and penalties for excessive orchestration churn.
+
+The code is organized so you can:
+- run **training** and **evaluation** under workload changes,
+- reproduce plots/tables in the paper,
+- swap **LLM provider** or disable LLM guidance to compare baselines.
+
+---
+
+## 2) Repository structure
+
+> NOTE: Folder names may differ slightly depending on your current layout—this is the intended structure.
